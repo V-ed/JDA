@@ -87,8 +87,15 @@ public final class MarkdownUtil
     @Nonnull
     public static String monospace(@Nonnull String input)
     {
-        String sanitized = MarkdownSanitizer.escape(input, ~MarkdownSanitizer.MONO);
-        return "`" + sanitized + "`";
+        String sanitized = MarkdownSanitizer.escape(input, ~MarkdownSanitizer.MONO_TWO);
+        StringBuilder builder = new StringBuilder();
+        // Special handling for monospace
+        if (sanitized.startsWith("`\u200B`"))
+            builder.append('\u200B');
+        builder.append(sanitized);
+        if(sanitized.endsWith("`\u200B`"))
+            builder.append('\u200B');
+        return "``" + builder.toString() + "``";
     }
 
     /**

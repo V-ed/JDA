@@ -420,9 +420,18 @@ public class MarkdownSanitizer
             token = "*\\*"; // BOLD needs special handling because the client thinks its ITALICS_A if you only escape once
         else if (region == (BOLD | ITALICS_A))
             token = "*\\*\\*"; // BOLD | ITALICS_A needs special handling because the client thinks its BOLD if you only escape once
-        builder.append("\\").append(token)
-               .append(seq)
-               .append("\\").append(token);
+        if (region == MONO_TWO && isIgnored(~MONO_TWO))
+        {
+            token = "`\u200B`";
+            builder.append(token).append(seq)
+                    .append(token);
+        }
+        else
+        {
+            builder.append("\\").append(token)
+                   .append(seq)
+                   .append("\\").append(token);
+        }
     }
 
     private boolean doesEscape(int index, @Nonnull String seq)
@@ -536,7 +545,7 @@ public class MarkdownSanitizer
 
         /**
          * Escape any format tokens that are not escaped or within a special region.
-         * <br>{@code "**Hello** World!" -> "\**Hello\** World!"}
+         * <br>{@code "**Hello** World!" -> "\*\*Hello\*\* World!"}
          */
         ESCAPE,
     }

@@ -48,9 +48,10 @@ public class MarkdownUtilTest
     @Test
     public void testMonospace()
     {
-        Assertions.assertEquals("`Hello World`", monospace("Hello World"));
-        Assertions.assertEquals("`Hello \\`Test\\` World`", monospace("Hello `Test` World"));
-        Assertions.assertEquals("`Hello ``Test`` World`", monospace("Hello ``Test`` World"));
+        Assertions.assertEquals("``Hello World``", monospace("Hello World"));
+        Assertions.assertEquals("``Hello `Test` World``", monospace("Hello `Test` World"));
+        Assertions.assertEquals("``Hello `\u200B`Test`\u200B` World``", monospace("Hello ``Test`` World"));
+        Assertions.assertEquals("``\u200B`\u200B`Hello World`\u200B`\u200B``", monospace("``Hello World``"));
     }
 
     @Test
