@@ -37,7 +37,8 @@ public final class MarkdownUtil
     public static String bold(@Nonnull String input)
     {
         String sanitized = MarkdownSanitizer.escape(input, ~MarkdownSanitizer.BOLD);
-        return "**" + sanitized + "**";
+        String fullSanitized = MarkdownUtil.escapeStartEndTokens(sanitized, "*");
+        return "**" + fullSanitized + "**";
     }
 
     /**
@@ -54,7 +55,8 @@ public final class MarkdownUtil
     public static String italics(@Nonnull String input)
     {
         String sanitized = MarkdownSanitizer.escape(input, ~MarkdownSanitizer.ITALICS_U);
-        return "_" + sanitized + "_";
+        String fullSanitized = MarkdownUtil.escapeStartEndTokens(sanitized, "_");
+        return "_" + fullSanitized.replaceAll("(?<![\\\\_])_(?!_)", "\\\\_") + "_";
     }
 
     /**
@@ -71,7 +73,8 @@ public final class MarkdownUtil
     public static String underline(@Nonnull String input)
     {
         String sanitized = MarkdownSanitizer.escape(input, ~MarkdownSanitizer.UNDERLINE);
-        return "__" + sanitized + "__";
+        String fullSanitized = MarkdownUtil.escapeStartEndTokens(sanitized, "_");
+        return "__" + fullSanitized + "__";
     }
 
     /**
@@ -149,7 +152,8 @@ public final class MarkdownUtil
     public static String spoiler(@Nonnull String input)
     {
         String sanitized = MarkdownSanitizer.escape(input, ~MarkdownSanitizer.SPOILER);
-        return "||" + sanitized + "||";
+        String fullSanitized = MarkdownUtil.escapeStartEndTokens(sanitized, "|");
+        return "||" + fullSanitized + "||";
     }
 
     /**
@@ -166,7 +170,8 @@ public final class MarkdownUtil
     public static String strike(@Nonnull String input)
     {
         String sanitized = MarkdownSanitizer.escape(input, ~MarkdownSanitizer.STRIKE);
-        return "~~" + sanitized + "~~";
+        String fullSanitized = MarkdownUtil.escapeStartEndTokens(sanitized, "~");
+        return "~~" + fullSanitized + "~~";
     }
 
     /**
@@ -217,5 +222,17 @@ public final class MarkdownUtil
     public static String maskedLink(@Nonnull String text, @Nonnull String url)
     {
         return "[" + text.replace("]", "\\]") + "](" + url.replace(")", "%29") + ")";
+    }
+    
+    @Nonnull
+    private static String escapeStartEndTokens(@Nonnull String input, String token)
+    {
+        StringBuilder builder = new StringBuilder();
+        if(input.startsWith(token))
+            builder.append("\\");
+        builder.append(input);
+        if(input.endsWith(token) && !input.endsWith("\\" + token))
+            builder.append("\\");
+        return builder.toString();
     }
 }

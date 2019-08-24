@@ -25,6 +25,9 @@ public class MarkdownUtilTest
     public void testBold()
     {
         Assertions.assertEquals("**Hello World**", bold("Hello World"));
+        Assertions.assertEquals("**\\*Hello World**", bold("*Hello World"));
+        Assertions.assertEquals("**Hello World\\***", bold("Hello World*"));
+        Assertions.assertEquals("**\\*Hello World\\***", bold("*Hello World*"));
         Assertions.assertEquals("**Hello \\*\\*Test\\*\\* World**", bold("Hello **Test** World"));
         Assertions.assertEquals("**Hello *Test* World**", bold("Hello *Test* World"));
     }
@@ -34,7 +37,10 @@ public class MarkdownUtilTest
     {
         Assertions.assertEquals("_Hello World_", italics("Hello World"));
         Assertions.assertEquals("_Hello \\_Test\\_ World_", italics("Hello _Test_ World"));
+        Assertions.assertEquals("_Hello \\_Test World_", italics("Hello _Test World"));
+        Assertions.assertEquals("_\\_Hello World_", italics("_Hello World"));
         Assertions.assertEquals("_Hello __Test__ World_", italics("Hello __Test__ World"));
+        Assertions.assertEquals("_Hello \\_ \\_Test__ World_", italics("Hello _ _Test__ World"));
     }
 
     @Test
